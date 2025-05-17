@@ -1,0 +1,8 @@
+{{ $title := .Get "title" }}
+{{- $content := .Inner | markdownify -}}
+<div class="def">
+  <h3 class="title">
+    Definition{{ if $title }}: {{ $title }}{{ end }}
+  </h3>
+  {{ $content }}
+</div>

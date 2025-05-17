@@ -1,0 +1,156 @@
+.pub-title {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  /* prevent wrapping so venue stays right */
+  flex-wrap: nowrap;
+}
+
+.pub-title-text {
+  flex: 0 0 80%; /* fixed 80% width */
+  font-weight: 700;
+  font-size: 1.4rem;
+  overflow-wrap: break-word; /* wrap if too long */
+}
+
+.pub-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline; /* aligns text nicely */
+  gap: 1rem;
+}
+
+.pub-title {
+  flex: 1 1 auto;
+  font-weight: 600;
+  font-size: 1.25rem;
+}
+
+.pub-venue {
+  flex: 2 1 0;
+  text-align: right;
+  font-style: italic;
+  font-size: 0.9rem;
+  color: #FF6F00; 
+}
+
+.pub-venue a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.pub-venue a:hover {
+  text-decoration: underline;
+}
+
+/*Pub artefacts*/
+
+.pub-artefacts {
+  font-size: 0.85rem;
+}
+
+.pub-artefacts p {
+  margin: 0 0 0.25rem 0;
+  font-weight: 600;
+  color: #444;
+}
+
+.pub-artefacts ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.pub-artefacts ul li a {
+  display: inline-block;
+  padding: 2px 8px;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  color: #319795;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.pub-artefacts ul li a:hover {
+  border-color: #1d3557;
+  text-decoration: underline;
+}
+
+
+.primary-author {
+  background-color: #f6d6bd;  /* Warm pastel peach */
+  color: #7a4e32;             /* Darker brown for contrast */
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-weight: 700;
+  box-shadow: 0 1px 2px rgba(122, 78, 50, 0.3);
+  font-size: 0.98rem;
+}
+
+.pub-authors a {
+  color: #0077B6; /* Kon-peki Blue */
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.3s ease;
+  font-size: 0.98rem;
+}
+
+.pub-authors a:hover {
+  color: #023E8A; /* Darker Kon-peki Blue */
+  text-decoration: underline;
+}
+
+.note-toggle-checkbox {
+  display: none;
+}
+
+.note-toggle-label {
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: teal;
+  user-select: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  position: relative;
+}
+
+/* Smiley before the label */
+.note-toggle-label::before {
+  content: "⬇️";
+  display: inline-block;
+  font-size: 1rem;
+  line-height: 1;
+  transition: transform 0.3s ease;
+  transform-origin: center;
+}
+
+/* Flip the smiley upside down when checkbox is checked */
+.note-toggle-checkbox:checked + .note-toggle-label::before {
+  transform: rotate(-90deg);
+}
+
+
+/* Rotate arrow when checked */
+.note-toggle-checkbox:checked + .note-toggle-label::after {
+  transform: rotate(90deg);
+}
+
+.note-content {
+  font-size: 0.9rem;
+  margin-top: 0.3em;
+  color: teal;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+/* Show note content when checked */
+.note-toggle-checkbox:checked ~ .note-content {
+  max-height: 100vh;
+}
+

@@ -1,0 +1,45 @@
+baseURL = '/'
+languageCode = 'en-us'
+title = 'Random Walks'
+theme = 'paper'
+
+[params]
+math = true
+customCSS = ["css/theorems.css", "css/footnotes.css", "css/tags.css", "css/home.css", "css/pub_artefacts.css"]
+favicon = "favicon.ico"
+appleTouchIcon = "apple-touch-icon.png"
+
+[taxonomies]
+  category = "categories"
+  tag = "tags"
+
+[markup.tableOfContents]
+startLevel = 2
+endLevel = 4
+
+[menu]
+  [[menu.main]]
+    identifier = "publications"
+    name = "Publications"
+    url = "/publications/"
+    weight = 1
+
+  [[menu.main]]
+    identifier = "posts"
+    name = "Posts"
+    url = "/posts/"
+    weight = 2
+
+  [[menu.main]]
+    identifier = "teaching"
+    name = "Teaching"
+    url = "/teaching/"
+    weight = 3
+
+[markup]
+  [markup.goldmark.renderer]
+    unsafe = true
+  [markup.highlight]
+    noClasses = false
+    style = "monokai"
+    lineNos = true

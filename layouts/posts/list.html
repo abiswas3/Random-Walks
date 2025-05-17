@@ -1,0 +1,32 @@
+{{ define "main" }}
+
+<h1>Notes</h1>
+
+{{ $posts := .Pages }}  <!-- all posts in this section -->
+
+{{/* Collect all categories */}}
+{{ $allCategories := slice }}
+
+{{ range $posts }}
+  {{ range .Params.categories }}
+    {{ $allCategories = $allCategories | append . }}
+  {{ end }}
+{{ end }}
+
+{{ $uniqueCategories := $allCategories | uniq | sort }}
+
+{{/* Loop over unique categories */}}
+{{ range $category := $uniqueCategories }}
+  <section>
+    <h2>{{ $category }}</h2>
+    <ul>
+      {{ range $post := $posts }}
+        {{ if in $post.Params.categories $category }}
+          <li><a href="{{ $post.RelPermalink }}">{{ $post.Title }}</a> — {{ $post.Date.Format "Jan 2, 2006" }}</li>
+        {{ end }}
+      {{ end }}
+    </ul>
+  </section>
+{{ end }}
+
+{{ end }}

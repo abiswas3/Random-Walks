@@ -1,0 +1,8 @@
+{{ $title := .Get "title" }}
+{{- $content := .Inner | markdownify -}}
+<div class="theorem">
+  <h3 class="title">
+    Theorem{{ if $title }}: {{ $title }}{{ end }}
+  </h3>
+  {{ $content }}
+</div>

@@ -1,0 +1,66 @@
+{{ define "main" }}
+<section class="publications-list">
+  {{ range $index, $pub := (sort .Site.Data.publications "date" "desc") }}
+    {{ if not $pub.hidden }}
+      <article class="publication-item">
+        <!-- Title and Venue -->
+        <h3 class="pub-title">
+          {{ $pub.title }}
+          {{ with $pub.venue }}
+            <span class="pub-venue">
+              {{ with index . "conference-url" }}
+                {{ if ne . "" }}
+                  <a href="{{ . }}" target="_blank" rel="noopener noreferrer">{{ index $pub.venue "display-name" }}</a>
+                {{ else }}
+                  {{ index $pub.venue "display-name" }}
+                {{ end }}
+              {{ else }}
+                {{ index $pub.venue "display-name" }}
+              {{ end }}
+            </span>
+          {{ end }}
+        </h3>
+
+        <!-- Authors -->
+        <div class="pub-authors">
+          {{ range $author := $pub.authors }}
+            {{ $highlight := cond $author.primary "primary-author" "" }}
+            {{ with index $author "author-url" }}
+              {{ if ne . "" }}
+                <a href="{{ . }}" class="author-link {{ $highlight }}" target="_blank" rel="noopener noreferrer">{{ $author.name }}</a>
+              {{ else }}
+                <span class="{{ $highlight }}">{{ $author.name }}</span>
+              {{ end }}
+            {{ else }}
+              <span class="{{ $highlight }}">{{ $author.name }}</span>
+            {{ end }}
+          {{ end }}
+        </div>
+
+        <!-- Artefacts -->
+        {{ if $pub.artefacts }}
+          <div class="pub-artefacts">
+            <ul>
+              {{ range $a := $pub.artefacts }}
+                <li>
+                  <a href="{{ $a.url }}" target="_blank" rel="noopener noreferrer">{{ index $a "display-name" }}</a>
+                </li>
+              {{ end }}
+            </ul>
+          </div>
+        {{ end }}
+
+        <!-- Note toggle -->
+        {{ with $pub.note }}
+          <div class="note-section">
+            <input type="checkbox" id="note-toggle-{{ $index }}" class="note-toggle-checkbox" />
+            <label for="note-toggle-{{ $index }}" class="note-toggle-label"> Show note</label>
+            <div class="note-content">{{ . | safeHTML }}</div>
+          </div>
+        {{ end }}
+
+      </article>
+    {{ end }}
+  {{ end }}
+</section>
+{{ end }}

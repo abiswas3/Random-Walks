@@ -1,0 +1,47 @@
+.tag {
+  display: inline-block;
+  background-color: #dbeafe;       /* light blue bg */
+  color: #1e40af;                  /* strong blue text */
+  font-weight: 600;
+  font-size: 0.875rem;             /* 14px */
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;           /* pill shape */
+  margin-right: 0.5rem;
+  margin-bottom: 0.4rem;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  position: relative;
+}
+
+.tag::before {
+  content: "#";
+  position: absolute;
+  left: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-weight: 700;
+}
+
+.tag:hover {
+  background-color: #3b82f6;      /* brighter blue */
+  color: white;
+}
+
+.tag {
+  position: relative;
+  padding-left: 1.2em; /* space for the # */
+  /* other styles */
+}
+
+.tag::before {
+  content: "#";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--your-hash-color);
+  font-weight: bold;
+}
+

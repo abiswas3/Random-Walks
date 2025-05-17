@@ -1,0 +1,11 @@
+{{ define "main" }}
+<article class="homepage">
+{{ if ne .Params.showtitle false }}
+  <h1>{{ .Title }}</h1>
+{{ end }}
+
+  <section>
+    {{ .Content }}
+  </section>
+</article>
+{{ end }}

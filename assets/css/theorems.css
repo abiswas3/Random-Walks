@@ -1,0 +1,135 @@
+:root {
+  /* Light mode colors */
+  --alert-border: #facc15;;
+  --alert-bg: #2d1f00;
+  --alert-text: #fde68a;
+  --alert-shadow: rgba(240, 196, 25, 0.3);
+  --alert-icon-stroke: #f0c419;
+
+  --quote-text: #555555;
+  --quote-border: #cccccc;
+  --quote-mark: #cccccc;
+  --quote-author: #666666;
+  --quote-backgound: #319795;
+
+    /* Remark colors */
+  --remark-border: #6f42c1;   /* purple-ish */
+  --remark-bg: #f9f9f9;
+  --remark-text: #4b2681;
+
+  --def-background: #eff6ff;
+  --def-textcolor: #3b82f6;
+  --def-border: #3b82f6;
+
+  --thm-border: #708238;
+  --thm-background: #fff8dc;
+}
+
+
+.def, .theorem {
+    border-left: 5px solid var(--def-border);
+    background-color: var(--def-background);
+    padding: 16px 20px;
+    margin: 20px 0;
+    border-radius: 6px;
+    color: var(--def-textcolor);
+}
+
+.theorem{
+  background-color: var(--thm-background);
+  border-left: 5px solid var(--thm-border);
+  color: var(--thm-border);
+}
+
+.def h3.title, .theorem h3.title {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  font-weight: 700;
+  font-size: 1.25rem; /* a bit larger than normal text */
+  color: var(--def-textcolor); /* match the border color for cohesion */
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  border-bottom: 1.5px solid var(--def-border) ;
+  padding-bottom: 0.25rem;
+}
+
+.theorem h3.title{
+  border-bottom: 1.5px solid var(--thm-border) ;
+  color: var(--thm-border); /* match the border color for cohesion */
+}
+.alert {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border: 2px solid var(--alert-border);
+  background-color: var(--alert-bg);
+  color: var(--alert-text);
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+  border-radius: 8px;
+/*  box-shadow: 0 2px 6px var(--alert-shadow);*/
+}
+
+.alert-icon {
+  margin-right: 1rem;  /* Space between icon and text */
+  font-size: 24px;
+  line-height: 1;
+  user-select: none;
+  pointer-events: none;
+  flex-shrink: 0;  /* Keep icon size consistent */
+}
+
+
+.quote {
+  font-style: italic;
+  color: var(--quote-text);
+  margin: 1.5rem 0;
+  padding-left: 1.5rem;
+  border-left: 4px solid var(--quote-border);
+  background: ghostwhite;
+  position: relative;
+  font-family: Georgia, serif;
+}
+
+.quote::before {
+  content: "“";
+  font-size: 2.5rem;
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--quote-mark);
+  line-height: 1;
+  font-weight: bold;
+  font-family: serif;
+}
+
+.quote p:last-child {
+  margin-top: 0.5rem;
+  font-style: normal;
+  font-weight: 600;
+  text-align: right;
+  color: var(--quote-author);
+}
+
+/* Remark style */
+.remark {
+  background-color: var(--remark-bg);
+  border-left: 5px solid var(--remark-border);
+  color: var(--remark-text);
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+  border-radius: 6px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+/*  font-style: italic;*/
+  font-size: 0.95em;
+}
+
+.remark strong{
+  color: var(--remark-text);
+}
+html.dark .remark {
+  background-color: var(--remark-bg) !important;
+  border-left: 4px solid var(--remark-border) !important;
+  color: var(--remark-text) !important;
+}
+
+

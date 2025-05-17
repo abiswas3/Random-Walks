@@ -1,0 +1,211 @@
+[
+  {
+      "title": "Project With Mark, Clement And Satchit",
+      "date": "2025-1-01",
+      "hidden": true,
+    "authors": [
+      {
+        "name": "Ari Biswas",
+        "author-url": ""
+
+      },
+      {
+        "name": "Mark Bun",
+        "author-url": ""
+      },
+      {
+        "name": "Clement Cannone",
+        "author-url": ""
+      },
+      {
+        "name": "Satchit Sivakumar",
+        "author-url": ""
+      }      
+    ],
+    "venue": {
+      "display-name": "",
+      "conference-url": ""
+    },
+    "artefacts": []
+  },
+
+  {
+    "title": "Refutations of Perfect Matchings In Expander Graphs Is Hard",
+    "date": "2025-01-20",
+    "note": "Manuscript available on request",
+    "hidden": false,
+    "authors": [
+      {
+        "name": "Ari Biswas",
+        "author-url": ""
+      },
+      {
+        "name": "Rajko Nenadov",
+        "author-url": "https://sites.google.com/view/rajkon"
+      }
+    ],
+    "venue": {
+      "display-name": "In Submission",
+      "conference-url": ""
+    },
+    "abstract": "This work studies the complexity of refuting the existence of a perfect matching in spectral expanders with an odd number of vertices, in the Polynomial Calculus (PC) and Sum of Squares (SoS) proof system. Austrin and Risse [SODA, 2021] showed that refuting perfect matchings in sparse $d$-regular *random* graphs in the above proof systems requires proofs with degree $\\Omega(n/\\log n)$ on average.  We extend their result by showing the same lower bound holds for **all** $d$-regular graphs with a mild spectral gap.Additionally, as Austrin and Risse do for random graphs, we show that the hardness of refuting a more general class of formulae, which includes both perfect matchings and *even-colouring* formulas, also reduces to the hardness of refuting perfect matchings in spectral expanders, thereby settling an open problem of Buss and Nordstrom.",
+    "artefacts": [
+    ],
+      "bibtex": ""
+
+  },
+
+{
+    "title": "Interactive Proofs For Differentially Private Counting",
+    "date": "2023-11-01",
+    "hidden": false,
+    "note": "The extended abstract appeared at <a href='https://tpdp.journalprivacyconfidentiality.org/2023/'>TPDP 2023</a>",    
+    "authors": [
+      {
+        "name": "Ari Biswas",
+        "author-url": "",
+        "primary": true
+      },
+      {
+        "name": "Graham Cormode",
+        "author-url": "https://warwick.ac.uk/fac/sci/dcs/people/graham_cormode/"
+      }
+    ],
+    "venue": {
+      "display-name": "CCS 2023",
+      "conference-url": "https://www.sigsac.org/ccs/CCS2023/"
+    },
+    "artefacts": [
+      {"url": "https://dl.acm.org/doi/10.1145/3576915.3616681", "display-name": "Conference paper"},
+      {"url": "https://abiswas3.github.io/papers/TpDpAbstract.pdf", "display-name": "Extended Abstract"},      
+      {"url": "slides/CCS_Short.pdf", "display-name": "Slides"},
+      {"url": "https://youtu.be/hRiGMDKYZoU", "display-name": "Talk"},
+      {"url": "https://github.com/abiswas3/Verifiable-Differential-Privacy", "display-name": "Code"}
+      
+    ],
+    "bibtex": "@inproceedings{10.1145/3576915.3616681,\n author = {Biswas, Ari and Cormode, Graham}, \ntitle = {Interactive Proofs For Differentially Private Counting}, \nyear = {2023}, \n isbn = {9798400700507}, \npublisher = {Association for Computing Machinery},\naddress = {New York, NY, USA}, \n url = {https://doi.org/10.1145/3576915.3616681}, \n doi = {10.1145/3576915.3616681},\n booktitle = {Proceedings of the 2023 ACM SIGSAC Conference on Computer and Communications Security}, \n pages = {1919–1933}, \n numpages = {15}, \n keywords = {differential privacy, secure multiparty computation, verifiable computation, zero knowledge}, \n location = {Copenhagen, Denmark}, \n series = {CCS '23}}",
+  "abstract": "Differential Privacy (DP) is often presented as a strong privacy-enhancing technology with broad applicability and advocated as a de facto standard for releasing aggregate statistics on sensitive data. However, in many embodiments, DP introduces a new attack surface: a malicious entity entrusted with releasing statistics could manipulate the results and use the randomness of DP as a convenient smokescreen to mask its nefariousness. Since revealing the random noise would obviate the purpose of introducing it, the miscreant may have a perfect alibi. To close this loophole, we introduce the idea of Interactive Proofs For Differential Privacy, which requires the publishing entity to output a zero knowledge proof that convinces an efficient verifier that the output is both DP and reliable. Such a definition might seem unachievable, as a verifier must validate that DP randomness was generated faithfully without learning anything about the randomness itself. We resolve this paradox by carefully mixing private and public randomness to compute verifiable DP counting queries with theoretical guarantees and show that it is also practical for real-world deployment. We also demonstrate that computational assumptions are necessary by showing a separation between information-theoretic DP and computational DP under our definition of verifiability."      
+  },
+    {
+    "title": "Differentially Private Hierarchical Heavy Hitters",
+    "date": "2024-07-01",
+    "hidden": false,
+    "note": "The poster appeared at <a href='https://tpdp.journalprivacyconfidentiality.org/2024/'>TPDP 2024</a>",
+    "authors": [
+      {
+        "name": "Ari Biswas",
+        "author-url": "",
+        "primary": true
+      },
+      {
+        "name": "Graham Cormode",
+        "author-url": "https://warwick.ac.uk/fac/sci/dcs/people/graham_cormode/"
+      },
+      {
+        "name": "Yaron Kanza",
+        "author-url": "https://www.linkedin.com/in/yaron-kanza-27897642/"
+      },
+      {
+        "name": "Divesh Srivastava",
+        "author-url": "https://divesh.net/"
+      },
+      {
+        "name": "Zhengyi Zhou",
+        "author-url": "https://dblp.org/pid/166/5104.html"
+      }
+    ],
+    "venue": {
+      "display-name": "PODS 2025",
+      "conference-url": "https://2025.sigmod.org/"
+    },
+    "artefacts": [
+      {"url": "/papers/dp-hhh-camera-ready.pdf", "display-name": "Conference paper"},
+     {"url": "slides/DP_HHH_Poster.pdf", "display-name": "Poster"}      
+    ],
+    "abstract" : "The task of finding Hierarchical Heavy Hitters (HHH) was introduced by Cormode et al. [12] as a generalisation of the heavy hitter problem. While finding HHH in data streams has been studied extensively, the question of releasing HHH when the underlying data is private remains unexplored. In this paper, we formalise and study the notion of differentially private HHH, in both the streaming and non-streaming setting. In the non-streaming setting, we show the surprising result that the relative error in estimating the count for any prefix is independent of the height of the hierarchy and the number of heavy hitters in the stream. Additionally, our algorithms also improve the error guarantees of Ghazi et al. [24] for the problem of counting over trees. Meanwhile, in the streaming setting, the main issue is that although the exact version of HHH has low global sensitivity (as counting queries are 1-sensitive), the approximation functions due to streaming have high global sensitivity, linear in the available space. Despite this obstacle, we show that the absolute error for estimating frequencies in the streaming setting is independent of the available space.",
+    "bibtex": "@article{10.1145/3695826,\nauthor = {Biswas, Ari and Cormode, Graham and Kanza, Yaron and Srivastava, Divesh and Zhou, Zhengyi},\ntitle = {Differentially Private Hierarchical Heavy Hitters},\nyear = {2024},\n issue_date = {November 2024},\npublisher = {Association for Computing Machinery},\naddress = {New York, NY, USA},\nvolume = {2},\nnumber = {5},\nurl = {https://doi.org/10.1145/3695826},\ndoi = {10.1145/3695826},\njournal = {Proc. ACM Manag. Data},\nmonth = nov,\narticleno = {208},\numpages = {25},\nkeywords = {differential privacy, hierarchical heavy hitters, improved composition}}"
+  },
+  {
+    "title": "Seeker: Real-Time Interactive Search",
+    "date": "2019-08-01",
+    "hidden": false,
+    "authors": [
+      {
+        "name": "Ari Biswas",
+        "author-url": "",
+        "primary": true
+      },
+      {
+        "name": "Thai Pham",
+        "author-url": "https://scholar.google.com/"
+      },
+      {
+        "name": "Houssam Nassif",
+        "author-url": "https://pages.cs.wisc.edu/~hous21/index.html"
+      },
+      {
+        "name": "Ben Snyder",
+        "author-url": "https://www.linkedin.com/in/benjamin-snyder-3b777b10"
+      },
+      {
+        "name": "Michael Vogelsong",
+        "author-url": "https://www.linkedin.com/in/michael-vogelsong-524b2080/"
+      }
+    ],
+    "venue": {
+      "display-name": "KDD 2019",
+      "conference-url": "https://www.kdd.org/kdd2019/"
+    },
+    "artefacts": [
+      {"url": "https://dl.acm.org/doi/10.1145/3292500.3330733", "display-name": "Conference Paper"},
+      {"url": "https://arxiv.org/abs/1905.13125", "display-name": "Arxiv"}
+    ],
+    "bibtex":"@inproceedings{10.1145/3292500.3330733,author = {Biswas, Ari and Pham, Thai T. and Vogelsong, Michael and Snyder, Benjamin and Nassif, Houssam},title = {Seeker: Real-Time Interactive Search},year = {2019},isbn = {9781450362016},publisher = {Association for Computing Machinery},address = {New York, NY, USA},url = {https://doi.org/10.1145/3292500.3330733},doi = {10.1145/3292500.3330733},booktitle = {Proceedings of the 25th ACM SIGKDD International Conference on Knowledge Discovery & Data Mining},pages = {2867–2875},numpages = {9},keywords = {real time recommendation, online learning, multi-armed bandit, interactive search, active learning},location = {Anchorage, AK, USA},series = {KDD '19}}",
+
+    "abstract": "This paper introduces Seeker, a system that allows users to interactively refine search rankings in real time, through feedback in the form of likes and dislikes. When searching online, users may not know how to accurately describe their product of choice in words. An alternative approach is to search an embedding space, allowing the user to query using a representation of the item (like a tune for a song, or a picture for an object). However, this approach requires the user to possess an example representation of their desired item. Additionally, most current search systems do not allow the user to dynamically adapt the results with further feedback. On the other hand, users often have a mental picture of the desired item and are able to answer ordinal questions of the form: Is this item similar to what you have in mind? With this assumption, our algorithm allows for users to provide sequential feedback on search results to adapt the search feed. We show that our proposed approach works well both qualitatively and quantitatively. Unlike most previous representation-based search systems, we can quantify the quality of our algorithm by evaluating humans-in-the-loop experiments."
+  },
+    {
+    "title": "Adversarial Principal Component Analysis",
+    "date": "2017-07-01",
+    "hidden":false,
+    "authors": [       
+      {
+        "name": "Ari Biswas",
+        "author-url": ""       
+      },      
+      {"name": "Daniel Pimentel", "author-url":  "https://danielpimentel.github.io/", "primary": true},
+      {"name": "Claudia Solís-Lemus", "author-url": "https://solislemuslab.github.io/"}      
+    ],
+    "venue": {
+      "display-name": "ISIT 2017",
+      "conference-url": "https://isit2017.org/"
+    },
+    "artefacts": [{"url": "https://ieeexplore.ieee.org/document/8006952", "display-name": "Conference Paper"}
+    ],
+    "abstract": "This paper studies the following question: where should an adversary place an outlier of a given magnitude in order to maximize the error of the subspace estimated by PCA? We give the exact location of this worst possible outlier, and the exact expression of the maximum possible error. Equivalently, we determine the information-theoretic bounds on how much an outlier can tilt a subspace in its direction. This in turn provides universal (worst-case) error bounds for PCA under arbitrary noisy settings. Our results also have several implications on adaptive PCA, online PCA, and rank-one updates. We illustrate our results with a subspace tracking experiment.",
+    "bibtex": "@INPROCEEDINGS{8006952, author={Pimentel-Alarcón, Daniel L. and Biswas, Aritra and Solís-Lemus, Claudia R.},\nbooktitle={2017 IEEE International Symposium on Information Theory (ISIT)}, title={Adversarial principal component analysis}, year={2017},volume={},number={}, pages={2363-2367},keywords={Principal component analysis;Noise measurement;Transforms;Robustness;Approximation algorithms;Genetic communication},doi={10.1109/ISIT.2017.8006952}}"
+
+  },
+  {
+    "title": "Hands-on Introduction To Computer Science At The Freshman Level",
+    "date": "2015-05-01",
+    "hidden": false,
+    "authors": [ 
+      {"name": "Ari Biswas", "author-url": ""}, 
+      {"name": "Timur Girgin", "author-url": "https://www.linkedin.com/in/tgirgin"}, 
+      {"name": "Karu Sankaralingam", "author-url": "https://karu.sites.cs.wisc.edu/wiki/"},
+      {"name": "Zach York", "author-url": "https://www.linkedin.com/in/zach-york-9511a359"},
+      {"name": "Raghuraman Balasubramanian", "author-url": "https://scholar.google.com/citations?user=7PCO-DEAAAAJ&hl=en", "primary": true}
+    ],
+    "venue": {
+      "display-name": "SIGCSE 2014",
+      "conference-url": "https://dl.acm.org/doi/proceedings/10.1145/2538862"
+    },
+    "artefacts": [{
+      "display-name": "Conference paper",
+      "url": "https://dl.acm.org/doi/10.1145/2538862.2538889"
+    }],
+    "abstract": "This paper details the creation of a hands-on introduction course that reflects the dramatic growth and diversity in computer science. Our aim was to enable students to get an end-to-end perspective on computer system design by building one. We report on a two-year exercise in using the Arduino platform to build a series of hands-on projects. We have used these projects in two course instances, and have obtained detailed student feedback, which we analyze and present in this paper. The instructions, code and videos developed are available open-source.",
+    "bibtex": "@inproceedings{10.1145/2538862.2538889, \nauthor = {Balasubramanian, Raghuraman and York, Zachary and Doran, Matthew and Biswas, Aritra and Girgin, Timur and Sankaralingam, Karthikeyan},\ntitle = {Hands-on introduction to computer science at the freshman level}, \nyear = {2014}, \nisbn = {9781450326056}, \npublisher = {Association for Computing Machinery}, \naddress = {New York, NY, USA}, \nurl = {https://doi.org/10.1145/2538862.2538889}, \ndoi = {10.1145/2538862.2538889}, \nbooktitle = {Proceedings of the 45th ACM Technical Symposium on Computer Science Education}, \npages = {235–240}, \nnumpages = {6}, \nkeywords = {hands-on projects, introduction to computer science, pedagogy}, \nlocation = {Atlanta, Georgia, USA}, \nseries = {SIGCSE '14}}"
+  }
+]

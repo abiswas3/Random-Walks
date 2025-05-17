@@ -1,0 +1,280 @@
+0x5e40521bb3a0 push rbp
+0x5e40521bb3a1 push r15
+0x5e40521bb3a3 push r14
+0x5e40521bb3a5 push r13
+0x5e40521bb3a7 push r12
+0x5e40521bb3a9 push rbx
+0x5e40521bb3aa mov qword ptr [rsp-0x18], rdx
+0x5e40521bb3af mov rcx, qword ptr [rsi]
+0x5e40521bb3b2 mov qword ptr [rsp-0x20], rcx
+0x5e40521bb3b7 mov r8, qword ptr [rdx]
+0x5e40521bb3ba mov rax, r8
+0x5e40521bb3bd mul rcx
+0x5e40521bb3c0 mov r14, rax
+0x5e40521bb3c3 mov rbp, rdx
+0x5e40521bb3c6 mov rax, 0xc2e1f593efffffff
+0x5e40521bb3d0 mov rbx, r14
+0x5e40521bb3d3 imul rbx, rax
+0x5e40521bb3d7 mov rcx, 0x43e1f593f0000001
+0x5e40521bb3e1 mov rax, rbx
+0x5e40521bb3e4 mul rcx
+0x5e40521bb3e7 mov r12, rax
+0x5e40521bb3ea mov qword ptr [rsp-0x30], rdx
+0x5e40521bb3ef mov rax, qword ptr [rsi+0x8]
+0x5e40521bb3f3 mov qword ptr [rsp-0x28], rax
+0x5e40521bb3f8 mul r8
+0x5e40521bb3fb mov r11, rax
+0x5e40521bb3fe mov r9, rdx
+0x5e40521bb401 mov rcx, 0x2833e84879b97091
+0x5e40521bb40b mov rax, rbx
+0x5e40521bb40e mul rcx
+0x5e40521bb411 mov r10, rax
+0x5e40521bb414 mov r13, rdx
+0x5e40521bb417 mov rax, qword ptr [rsi+0x10]
+0x5e40521bb41b mov qword ptr [rsp-0x10], rax
+0x5e40521bb420 mul r8
+0x5e40521bb423 mov rcx, rax
+0x5e40521bb426 mov r15, rdx
+0x5e40521bb429 mov rax, qword ptr [rsi+0x18]
+0x5e40521bb42d mov qword ptr [rsp-0x8], rax
+0x5e40521bb432 mul r8
+0x5e40521bb435 mov r8, rax
+0x5e40521bb438 mov rsi, rdx
+0x5e40521bb43b add r11, rbp
+0x5e40521bb43e adc rcx, r9
+0x5e40521bb441 adc r8, r15
+0x5e40521bb444 setb r15b
+0x5e40521bb448 add r11, r10
+0x5e40521bb44b adc r13, 0x0
+0x5e40521bb44f mov rdx, 0xb85045b68181585d
+0x5e40521bb459 mov rax, rbx
+0x5e40521bb45c mul rdx
+0x5e40521bb45f mov r9, rdx
+0x5e40521bb462 mov rbp, rax
+0x5e40521bb465 add rbp, rcx
+0x5e40521bb468 adc r9, 0x0
+0x5e40521bb46c add r12, r14
+0x5e40521bb46f adc r11, qword ptr [rsp-0x30]
+0x5e40521bb474 adc rbp, r13
+0x5e40521bb477 adc r9, 0x0
+0x5e40521bb47b mov rcx, 0x30644e72e131a029
+0x5e40521bb485 mov rax, rbx
+0x5e40521bb488 mul rcx
+0x5e40521bb48b mov rbx, rdx
+0x5e40521bb48e mov r12, rax
+0x5e40521bb491 add r12, r8
+0x5e40521bb494 adc rbx, 0x0
+0x5e40521bb498 add r12, r9
+0x5e40521bb49b adc rbx, 0x0
+0x5e40521bb49f add r15b, 0xff
+0x5e40521bb4a3 adc rbx, rsi
+0x5e40521bb4a6 mov rax, qword ptr [rsp-0x18]
+0x5e40521bb4ab mov r15, qword ptr [rax+0x8]
+0x5e40521bb4af mov rax, r15
+0x5e40521bb4b2 mul qword ptr [rsp-0x20]
+0x5e40521bb4b7 mov rcx, rdx
+0x5e40521bb4ba mov r13, rax
+0x5e40521bb4bd mov rax, r15
+0x5e40521bb4c0 mul qword ptr [rsp-0x28]
+0x5e40521bb4c5 mov r8, rdx
+0x5e40521bb4c8 mov rsi, rax
+0x5e40521bb4cb add rsi, rbp
+0x5e40521bb4ce adc r8, 0x0
+0x5e40521bb4d2 add r13, r11
+0x5e40521bb4d5 adc rsi, rcx
+0x5e40521bb4d8 adc r8, 0x0
+0x5e40521bb4dc mov r11, r13
+0x5e40521bb4df mov rax, 0xc2e1f593efffffff
+0x5e40521bb4e9 imul r11, rax
+0x5e40521bb4ed mov rax, r11
+0x5e40521bb4f0 mov rcx, 0x43e1f593f0000001
+0x5e40521bb4fa mul rcx
+0x5e40521bb4fd mov qword ptr [rsp-0x30], rdx
+0x5e40521bb502 mov r10, rax
+0x5e40521bb505 mov rax, r11
+0x5e40521bb508 mov rcx, 0x2833e84879b97091
+0x5e40521bb512 mul rcx
+0x5e40521bb515 mov rcx, rdx
+0x5e40521bb518 mov r14, rax
+0x5e40521bb51b add r14, rsi
+0x5e40521bb51e adc rcx, 0x0
+0x5e40521bb522 mov rax, r15
+0x5e40521bb525 mul qword ptr [rsp-0x10]
+0x5e40521bb52a mov rsi, rdx
+0x5e40521bb52d mov r9, rax
+0x5e40521bb530 add r9, r12
+0x5e40521bb533 adc rsi, 0x0
+0x5e40521bb537 add r9, r8
+0x5e40521bb53a adc rsi, 0x0
+0x5e40521bb53e mov rax, r11
+0x5e40521bb541 mov rdx, 0xb85045b68181585d
+0x5e40521bb54b mul rdx
+0x5e40521bb54e mov r8, rdx
+0x5e40521bb551 mov rbp, rax
+0x5e40521bb554 add rbp, r9
+0x5e40521bb557 adc r8, 0x0
+0x5e40521bb55b add r10, r13
+0x5e40521bb55e adc r14, qword ptr [rsp-0x30]
+0x5e40521bb563 adc rbp, rcx
+0x5e40521bb566 adc r8, 0x0
+0x5e40521bb56a mov rax, r15
+0x5e40521bb56d mul qword ptr [rsp-0x8]
+0x5e40521bb572 mov rcx, rdx
+0x5e40521bb575 mov r9, rax
+0x5e40521bb578 add r9, rbx
+0x5e40521bb57b adc rcx, 0x0
+0x5e40521bb57f mov rax, r11
+0x5e40521bb582 mov rdx, 0x30644e72e131a029
+0x5e40521bb58c mul rdx
+0x5e40521bb58f mov r12, rax
+0x5e40521bb592 mov r11, rdx
+0x5e40521bb595 lea rax, ptr [r9+rsi*1]
+0x5e40521bb599 add r12, rax
+0x5e40521bb59c adc r11, 0x0
+0x5e40521bb5a0 add r12, r8
+0x5e40521bb5a3 adc r11, 0x0
+0x5e40521bb5a7 add r9, rsi
+0x5e40521bb5aa adc r11, rcx
+0x5e40521bb5ad mov rax, qword ptr [rsp-0x18]
+0x5e40521bb5b2 mov r15, qword ptr [rax+0x10]
+0x5e40521bb5b6 mov rax, r15
+0x5e40521bb5b9 mul qword ptr [rsp-0x20]
+0x5e40521bb5be mov rcx, rdx
+0x5e40521bb5c1 mov r13, rax
+0x5e40521bb5c4 mov rax, r15
+0x5e40521bb5c7 mul qword ptr [rsp-0x28]
+0x5e40521bb5cc mov r8, rdx
+0x5e40521bb5cf mov rsi, rax
+0x5e40521bb5d2 add rsi, rbp
+0x5e40521bb5d5 adc r8, 0x0
+0x5e40521bb5d9 add r13, r14
+0x5e40521bb5dc adc rsi, rcx
+0x5e40521bb5df adc r8, 0x0
+0x5e40521bb5e3 mov r14, r13
+0x5e40521bb5e6 mov rax, 0xc2e1f593efffffff
+0x5e40521bb5f0 imul r14, rax
+0x5e40521bb5f4 mov rax, r14
+0x5e40521bb5f7 mov rcx, 0x43e1f593f0000001
+0x5e40521bb601 mul rcx
+0x5e40521bb604 mov r9, rdx
+0x5e40521bb607 mov r10, rax
+0x5e40521bb60a mov rax, r14
+0x5e40521bb60d mov rcx, 0x2833e84879b97091
+0x5e40521bb617 mul rcx
+0x5e40521bb61a mov rcx, rdx
+0x5e40521bb61d mov rbx, rax
+0x5e40521bb620 add rbx, rsi
+0x5e40521bb623 adc rcx, 0x0
+0x5e40521bb627 mov rax, r15
+0x5e40521bb62a mul qword ptr [rsp-0x10]
+0x5e40521bb62f mov rsi, rdx
+0x5e40521bb632 mov rbp, rax
+0x5e40521bb635 add rbp, r12
+0x5e40521bb638 adc rsi, 0x0
+0x5e40521bb63c add rbp, r8
+0x5e40521bb63f adc rsi, 0x0
+0x5e40521bb643 mov rax, r14
+0x5e40521bb646 mov rdx, 0xb85045b68181585d
+0x5e40521bb650 mul rdx
+0x5e40521bb653 mov r8, rdx
+0x5e40521bb656 mov r12, rax
+0x5e40521bb659 add r12, rbp
+0x5e40521bb65c adc r8, 0x0
+0x5e40521bb660 add r10, r13
+0x5e40521bb663 adc rbx, r9
+0x5e40521bb666 adc r12, rcx
+0x5e40521bb669 adc r8, 0x0
+0x5e40521bb66d mov rax, r15
+0x5e40521bb670 mul qword ptr [rsp-0x8]
+0x5e40521bb675 mov rcx, rdx
+0x5e40521bb678 mov r9, rax
+0x5e40521bb67b add r9, r11
+0x5e40521bb67e adc rcx, 0x0
+0x5e40521bb682 mov rax, r14
+0x5e40521bb685 mov rdx, 0x30644e72e131a029
+0x5e40521bb68f mul rdx
+0x5e40521bb692 mov r14, rax
+0x5e40521bb695 mov r11, rdx
+0x5e40521bb698 lea rax, ptr [r9+rsi*1]
+0x5e40521bb69c add r14, rax
+0x5e40521bb69f adc r11, 0x0
+0x5e40521bb6a3 add r14, r8
+0x5e40521bb6a6 adc r11, 0x0
+0x5e40521bb6aa add r9, rsi
+0x5e40521bb6ad adc r11, rcx
+0x5e40521bb6b0 mov rax, qword ptr [rsp-0x18]
+0x5e40521bb6b5 mov r9, qword ptr [rax+0x18]
+0x5e40521bb6b9 mov rax, r9
+0x5e40521bb6bc mul qword ptr [rsp-0x20]
+0x5e40521bb6c1 mov rcx, rdx
+0x5e40521bb6c4 mov r15, rax
+0x5e40521bb6c7 mov rax, r9
+0x5e40521bb6ca mul qword ptr [rsp-0x28]
+0x5e40521bb6cf mov r8, rdx
+0x5e40521bb6d2 mov rsi, rax
+0x5e40521bb6d5 add rsi, r12
+0x5e40521bb6d8 adc r8, 0x0
+0x5e40521bb6dc add r15, rbx
+0x5e40521bb6df adc rsi, rcx
+0x5e40521bb6e2 adc r8, 0x0
+0x5e40521bb6e6 mov rbp, 0xc2e1f593efffffff
+0x5e40521bb6f0 imul rbp, r15
+0x5e40521bb6f4 mov rax, rbp
+0x5e40521bb6f7 mov rcx, 0x43e1f593f0000001
+0x5e40521bb701 mul rcx
+0x5e40521bb704 mov rbx, rdx
+0x5e40521bb707 mov r12, rax
+0x5e40521bb70a mov rax, rbp
+0x5e40521bb70d mov rcx, 0x2833e84879b97091
+0x5e40521bb717 mul rcx
+0x5e40521bb71a mov rcx, rdx
+0x5e40521bb71d mov r10, rax
+0x5e40521bb720 add r10, rsi
+0x5e40521bb723 adc rcx, 0x0
+0x5e40521bb727 mov rax, r9
+0x5e40521bb72a mul qword ptr [rsp-0x10]
+0x5e40521bb72f mov rsi, rdx
+0x5e40521bb732 mov r13, rax
+0x5e40521bb735 add r13, r14
+0x5e40521bb738 adc rsi, 0x0
+0x5e40521bb73c add r13, r8
+0x5e40521bb73f adc rsi, 0x0
+0x5e40521bb743 mov rax, rbp
+0x5e40521bb746 mov rdx, 0xb85045b68181585d
+0x5e40521bb750 mul rdx
+0x5e40521bb753 mov r14, rdx
+0x5e40521bb756 mov r8, rax
+0x5e40521bb759 add r8, r13
+0x5e40521bb75c adc r14, 0x0
+0x5e40521bb760 add r12, r15
+0x5e40521bb763 adc r10, rbx
+0x5e40521bb766 adc r8, rcx
+0x5e40521bb769 adc r14, 0x0
+0x5e40521bb76d mov rax, r9
+0x5e40521bb770 mul qword ptr [rsp-0x8]
+0x5e40521bb775 mov rcx, rdx
+0x5e40521bb778 mov r9, rax
+0x5e40521bb77b add r9, r11
+0x5e40521bb77e adc rcx, 0x0
+0x5e40521bb782 lea r11, ptr [r9+rsi*1]
+0x5e40521bb786 mov rax, rbp
+0x5e40521bb789 mov rdx, 0x30644e72e131a029
+0x5e40521bb793 mul rdx
+0x5e40521bb796 add rax, r11
+0x5e40521bb799 adc rdx, 0x0
+0x5e40521bb79d add rax, r14
+0x5e40521bb7a0 adc rdx, 0x0
+0x5e40521bb7a4 add r9, rsi
+0x5e40521bb7a7 adc rdx, rcx
+0x5e40521bb7aa mov qword ptr [rdi], r10
+0x5e40521bb7ad mov qword ptr [rdi+0x8], r8
+0x5e40521bb7b1 mov qword ptr [rdi+0x10], rax
+0x5e40521bb7b5 mov qword ptr [rdi+0x18], rdx
+0x5e40521bb7b9 mov rax, rdi
+0x5e40521bb7bc pop rbx
+0x5e40521bb7bd pop r12
+0x5e40521bb7bf pop r13
+0x5e40521bb7c1 pop r14
+0x5e40521bb7c3 pop r15
+0x5e40521bb7c5 pop rbp
+0x5e40521bb7c6 ret 
