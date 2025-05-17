@@ -1,23 +1,24 @@
 +++
 date = '2025-05-15T17:52:40+01:00'
 draft = false
-title = "Montgomery Multiplication: Theory Vs Realtity" 
+title = "Montgomery Multiplication: Theory Vs Practice" 
 tags = ["cryptography", "benchmarking"]
 categories = ["Software"]
 authors = ["Ari"]
-toc = false
+toc = true
 type= "posts"  
 +++
 
-Recently, in [a blog post](https://hackmd.io/@Ingonyama/Barret-Montgomery) Yuval Domb describes a subtle, but remarkably clever optimisation that allows us to compute the Montgomery product of two $n$ word[^z] integers using $2n^2 + 1$ multiplication operations (as opposed to the previously best known $2n^2 + n$).
-Although an improvement in theory, empirically the new algorithm appears to be slower than its suboptimal predecessor. 
+In a recent [blog post](https://hackmd.io/@Ingonyama/Barret-Montgomery), Yuval Domb describes a subtle, but remarkably clever optimisation that allows us to compute the Montgomery product of two integers modulo a $n$-limb[^z] integer $p$, using $2n^2 + 1$ multiplication operations.
+Previously, the best known algorithm[^z2] for Montgomery multiplication was known to use $2n^2 + n$ multiplication operations.
+Despite this theoretical promise of fewer multiplications, we did not see physical speedups in runtime when testing the new algorithm empirically against the old algorithms.
 This post is a deep dive into why this could be, and potentially what can be done about it.
-Before diving into the code and our analysis, we briefly review Montgomery Multiplication.
 
-[^z]: Word, digit, limbs are all interchangeable. For everything we discuss here, a word is 64-bits. So a 2-limb integer is just an integer that takes 2$\times$ 64 bits to describe.
+[^z]: The terms word, digit, limbs are all interchangeable. For everything we discuss here, the word size is 64-bits. So a 2-limb integer is just an integer that takes 2$\times$ 64 bits to describe.
 
+[^z2]: A description of this algorithm can be found in [Chapter 1 of Acar's Phd thesis](papers/Acard.pdf).
 
-## Montgomery Multiplication - Review
+## Montgomery Multiplication - A Brief Review
 
 Given $n$ limb modulus $p$, and integers $a$ and $b$, the modular multiplication problem is to compute the remainder of the product
 
@@ -41,7 +42,7 @@ For the interested reader, [Montgomery Arithmetic from a Software Perspective
 
 [^a]: The terms words and digits are sometimes used interchangeably. A word in this post will always be 64 bits of memory.
 
-At a high level every Montgomery multiplication uses 3 kinds of operations[^aa] (see [Page 34 Table 2.1](/papers/Acar.pdf#page=34) for an overview of the exact counts):
+At a high level every Montgomery multiplication algorithm uses 3 kinds of operations[^aa] (see [Page 34 Table 2.1](/papers/Acar.pdf#page=34) for an overview of the exact counts):
 
 + Addition of two 64 bit integers with and without carry.
 + Multiplication of two 64 bit integers with and without carry.
@@ -52,7 +53,7 @@ At a high level every Montgomery multiplication uses 3 kinds of operations[^aa] 
 More complex operations just use the above instructions as building blocks.
 
 {{< remark >}}
-A critical factor for understanding performance is that these operations not equal.
+A critical factor for understanding performance is that these operations are not equal.
 For example, on Skylake (mid-level x86 processor)
 
 + add has a latency of .25 (i.e. on average, with 1 core, you can retire an add and three other equivalent-cost instructions in one cycle)
@@ -74,23 +75,19 @@ The remainder of this document tries to understand why?
 {{</ remark>}}
 
 
-
 ## Benchmarking Details 
 
-We first analyse the performance, and subsequently in a later section, we provide the instructions for re-creating the workflow.
 
-### Empirical Performance
+### Empirical Performance 
 
-We compare 2 algorithms to the new algorithm. 
-The SOS algorithm in [Acar's theis](papers/Acar.pdf) which we refer to as C-mult.
-We refr by G-mult to an optimisation of the CIOS algorithm by the [Gnark](https://hackmd.io/@gnark/modular_multiplication) team. 
-Both these algorithms are already implemented in [Arkworks](https://github.com/a16z/arkworks-algebra).
+We were provided with an [implementation](https://github.com/worldfnd/ProveKit/blob/dd8134ec3f2ad4991caa87653254ee64daf2d441/block-multiplier/src/lib.rs#L121) of the new multiplication algorithm[^y] by the folks at [Ingoyama](https://www.ingonyama.com/), specifically targeting the [BN-254](https://neuromancer.sk/std/bn/bn254) curve (i.e $n=4$), which we refer to as Y-mult in this post.
 
-[^y]: The only change we made was we [unrolled](https://github.com/abiswas3/Montgomery-Benchmarks/blob/0263c89bce53ea62ff7d9cba143020443b763659/src/yuval_mult.rs#L34) for ```addv``` helper method for $n=4$.
-This only sped things up.
+The algorithms used for comparison are the SOS and optimised CIOS algorithms.
+We refer to the SOS algorithm described in [Acar's thesis](papers/Acar.pdf) as C-mult in this post.
+We denote as G-mult, the optimised version of the CIOS[^z3] algorithm by the [Gnark](https://hackmd.io/@gnark/modular_multiplication) team. 
+[Arkworks](https://github.com/a16z/arkworks-algebra) already had an implementations of the CIOS algorithm, and it can be found [here](htt:ps://github.com/a16z/arkworks-algebra/blob/7ad88c46e859a94ab8e0b19fd8a217c3dc472f1c/ff-macros/src/montgomery/mul.rs#L11).
+An implementation of the SOS[^g] algorithm can be found [here](https://github.com/a16z/arkworks-algebra/blob/7ad88c46e859a94ab8e0b19fd8a217c3dc472f1c/ff-macros/src/montgomery/mul.rs#L77).
 
-We found an implementation[^y] of the new multiplication algorithm [here](https://github.com/worldfnd/ProveKit/blob/dd8134ec3f2ad4991caa87653254ee64daf2d441/block-multiplier/src/lib.rs#L121) by the folks at [Ingoyama](https://www.ingonyama.com/), specifically targetting the [BN-254](https://neuromancer.sk/std/bn/bn254) curve (i.e $n=4$), which we refer to as Y-mult.
-As stated earlier, Arkworks already had an implementation of the CIOS algorithm written [here](https://github.com/a16z/arkworks-algebra/blob/7ad88c46e859a94ab8e0b19fd8a217c3dc472f1c/ff-macros/src/montgomery/mul.rs#L11) and the SOS[^g] algorithm [here](https://github.com/a16z/arkworks-algebra/blob/7ad88c46e859a94ab8e0b19fd8a217c3dc472f1c/ff-macros/src/montgomery/mul.rs#L77).
 To simplify the investigation process, we stripped the code down to the essential helper functions and the ```scalar_mul``` function. 
 Then we wrote a [simple script](https://github.com/abiswas3/Montgomery-Benchmarks/blob/barebones_profiling/src/main.rs) to compare the performance of the two algorithms to see the speedup promised in theory manifested itself in practice.
 The stripped down code needed to compute the montgomery product with Yuval's algorithm can be found [here](https://github.com/abiswas3/Montgomery-Benchmarks/blob/barebones_profiling/src/yuval_mult.rs).
@@ -98,30 +95,45 @@ Similarly, the stripped down code needed to compute the montgomery product with 
 
 [^g]: The comments claim that this is CIOS, but if you refer to the algorithms in Acar's thesis, this is defined as SOS.
 
+[^z3]:The CIOS algorithm description can also be found Acar's thesis.
+ 
+[^y]: The only change we made was we [unrolled](https://github.com/abiswas3/Montgomery-Benchmarks/blob/0263c89bce53ea62ff7d9cba143020443b763659/src/yuval_mult.rs#L34) for ```addv``` helper method for $n=4$.
+This only sped things up.
+
+
 {{< remark >}}
-This entire writeup focuses on $n=4$. 
-It is entirely possible that for larger values of $N$, the miscellaneous overheads we are about to discuss below will be outdone by the gains from fewer multiplications. 
+This entire write-up focuses on $n=4$. 
+It is entirely possible that for larger values of $n$, the miscellaneous overheads we are about to discuss below will be outdone by the gains from fewer multiplications. 
 {{< /remark >}}
+
+These are the instructions to empirically evaluate the running time of a single Montgomery multiplication. 
+We assume that the inputs are already in Montgomery form, 
+and the output will be stored in Montgomery form.
+This implies that the time to convert back and forth from standard
+to Montgomery form is not included in benchmarking run times.
 
 ```
 git clone https://github.com/abiswas3/Montgomery-Benchmarks.git
-git checkout -b barebones_profiling
-git pull origin barebones_profiling
+cd Montgomery-Benchmarks
+git checkout --track origin/barebones_profiling
 cargo run --release
 ```
 Cargo run release should produce a `benchmark_data.csv` file for which each line is a trial run of how long a single multiplication took in nano seconds.
-Feel free to use whatever plotting software you use.
+We then plot a box plot of the distribution to understand run times.
 
-**Plot new one**
 ![Benchmark result](/images/mont_mult/bench.jpeg)
+
+{{< remark>}}
+This implies that the new algorithm is actually slower than even the SOS algorithm.
+{{</ remark >}}
 
 ### Computer Information
 
 All computations were run on Intel CPUs.
-Admittedly, this computer would not rank amongst the top of the line fully speced out servers availale today.
-However, for multiplying numbers, this was sufficient. 
-We did also run the code on a M2 macbook air with 8GB of ram. 
-The relative trend between the algorithms were found to be the same.
+Admittedly, this machine is not one of the top-of-the-line, fully specked-out servers available today. 
+However, it was more than sufficient to do multiplication. 
+We also ran the code on an M2 MacBook Air with 8GB of RAM and observed that the relative performance trends remained consistent.
+
 
 ```
 lscpu
@@ -181,6 +193,8 @@ Shown below is the exact x86 assembly instructions that were exectured when runn
 
 These files **only** contain the assembly instructions that were executed from when the function ```scalar_mul``` was called, to when the functions returned i.e. these are the exact instructions for Montgomery Multiplications.
 Instructions that were overhead of our benchmarking code, or the operating system have been filtered out.
+
++ [ ] **TODO**: Add a link to this large file (wonder where I should host it?)
 
 [Here]() is a dump of entire (3 million odd) set of x86 instruction that are executed, when we type ```cargo run``` into our terminal.
 We describe later how to extract the methods we care about from this giant mess of code.
@@ -270,7 +284,67 @@ It just means that the way the Rust compiler is building the current binary is n
 {{</ remark >}}
 
 At this point we have established why we think we do not see an improvement in runtime.
-The remainder of the post is written as tutorial on how we were able to perform the above analysis.
+One potential way to see the promised speedup is to right optimised assembly code directly.
+We defer investigating whether this is possible to future work.
+
 
 ## How To Replicate The Process
+
+The remainder of the post is written as tutorial on how we were able to perform the above analysis.
+
+### Updating Cargo Configuration
+
+This will make it so that the rustc linker includes all the symbols in the binary.
+
+```
+$ cat ~/.cargo/config
+[target.x86_64-unknown-linux-gnu]
+rustflags = [ "-C", "link-args=-Wl,-export-dynamic" ]
+```
+
+{{< alert>}}
+What does including symbols in the binary mean?
+{{</ alert >}}
+
+### Updating the Cargo.toml
+
+The next step is to update are Cargo.toml file with the following lines.
+
+```
+[profile.release-with-debug]
+inherits = "release"
+debug = true
+   
+```
+
+This makes it so that we can build with debug information, but still in release-mode,
+when we run the code with the following parameters.
+```
+$ cargo build --release-with-debug
+```
+
+This is how the full Cargo.toml file looks like at this point
+
+```
+───────┬─────────────────────────────────────────────────────────────────────────────────────────────────────
+       │ File: Cargo.toml
+───────┼─────────────────────────────────────────────────────────────────────────────────────────────────────
+   1   │ [package]
+   2   │ name = "minimal_mult"
+   3   │ version = "0.1.0"
+   4   │ edition = "2024"
+   5   │
+   6   │ [dependencies]
+   7   │ seq-macro = "0.3.5"
+   8   │ ark-std = { version = "0.5.0", default-features = false }
+   9   │ primitive-types = "0.13.1"
+  10   │ indicatif = "0.17"
+  11   │ ark-ff = { git = "https://github.com/abiswas3/arkworks-algebra.git", branch = "yuvals-mont-mult" }
+  12   │ ark-ff-macros = { git = "https://github.com/abiswas3/arkworks-algebra.git", branch = "yuvals-mont-mult" }
+  13   │
+  14   │ [profile.release-with-debug]
+  15   │ inherits = "release"
+  16   │ debug = true
+
+```
 
