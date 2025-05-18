@@ -3,19 +3,19 @@ a.footnote-ref {
   color: #E25822;
   font-weight: bold;
   position: relative;
-  padding-left: 1.2em;
+  padding-right: 0.4em;
+  padding-left: 0.1em;
 }
 
-a.footnote-ref::before {
-  content: "🍊";
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 1em;
-  line-height: 1;
-}
-
+/* a.footnote-ref::before { */
+/*   position: absolute; */
+/*   left: 0; */
+/*   top: 50%; */
+/*   transform: translateY(-50%); */
+/*   font-size: 1em; */
+/*   line-height: 1; */
+/* } */
+/**/
 
 body.teaching {
   /* custom about page styles */

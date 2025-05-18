@@ -24,6 +24,38 @@ $ cargo build --release-with-debug
 
 Now we want to find in our built binary the symbols for the functions we care about: 
 
+{{< remark>}}
+The nm command in Linux is used to inspect symbol tables of compiled binaries (e.g., .o, .a, or ELF binaries like executables and shared libraries).
+Symbols are things like:
+
+Function names
+
+Global variables
+
+Static variables
+
+Debug info
+
+They help during linking and debugging.
+{{</ remark >}}
+
+```
+00000000 T main
+00000010 T my_function
+00000000 B global_variable
+
+```
+
+{{< remark>}}
+T = the symbol is in the text (code) section (i.e., a function)
+
+B = in BSS section (uninitialized global)
+
+D = in data section (initialized global)
+
+U = undefined (i.e., needs to be resolved during linking)
+
+{{</ remark >}}
 ```
 $ nm --defined-only target/release-with-debug/minimal_mult|grep scalar
 000000000004b7d0 t _ZN12minimal_mult10yuval_mult10scalar_mul17ha435832ac9fe806eE

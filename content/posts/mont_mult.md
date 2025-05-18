@@ -29,8 +29,8 @@ Furthermore, modern cryptographic applications often require chaining many modul
 If we used long division for every individual multiplication, this would be prohibitively slow.
 Instead, we use [Montgomery multiplication](https://en.wikipedia.org/wiki/Montgomery_modular_multiplication).
 
-In Montgomery multiplication, instead of computing $ab \mod p$, we compute $$abR^{-1} \mod p$$where $R$ is set to the smallest power of two exceeding $p$ that falls on a computer word boundary.
-For example, if $p$ is 381 bit integer, then $R= 2^{n \times w}=2^{6\times 64} = R^{384}$ on a 64-bit architecture.
+In Montgomery multiplication, instead of computing $ab \mod p$, we compute $$abR^{-1} \equiv (ab + mp)/R \mod p$$ where $R$ is set to the smallest power of two exceeding $p$ that falls on a computer word boundary and $m$ is some carefully chosen integer such that $ab + mp$ is divisible by $R$.
+For example, if $p$ is 381 bit integer, then $R= 2^{n \times w}=2^{6\times 64} = 2^{384}$ on a 64-bit architecture.
 Abstracting over some details, the reason for doing so is that the above computation does not use the expensive division algorithm.
 As $R$ is a power of two, we can divide by $R$ by using the bit shift operation which is native to most Instruction Set Architectures.
 This leads to more efficient code than implementing long division.
@@ -77,6 +77,7 @@ The remainder of this document tries to understand why?
 
 ## Benchmarking Details 
 
+We first describe our findings, and then describe how to recreate the analysis workflow.
 
 ### Empirical Performance 
 
@@ -129,7 +130,7 @@ This implies that the new algorithm is actually slower than even the SOS algorit
 
 ### Computer Information
 
-All computations were run on Intel CPUs.
+All computations were run on Intel CPUs on Digital Ocean servers.
 Admittedly, this machine is not one of the top-of-the-line, fully specked-out servers available today. 
 However, it was more than sufficient to do multiplication. 
 We also ran the code on an M2 MacBook Air with 8GB of RAM and observed that the relative performance trends remained consistent.
@@ -185,20 +186,16 @@ Swap:             0B          0B          0B
 
 ## Analysis
 
-To understand why these algorithms perform the way they do, we look at the x-86 assembly instruction that were executed for each of these algorithms.
-Shown below is the exact x86 assembly instructions that were exectured when running the two new multiplication algorihtms (we ignore SOS as CIOS was known to be faster).
+As a first step towards understanding what is going on, shown below is the `x86`-assembly code that the Rust compiler generates for each of the algorithm implementations.
 
 + [y-mult](/code/yuval) (Short for Yuval's multiplication algorithm.)
 + [g-mult](/code/opt) (This is CIOS from Acar's thesis with the GNARK optimisation)
 
-These files **only** contain the assembly instructions that were executed from when the function ```scalar_mul``` was called, to when the functions returned i.e. these are the exact instructions for Montgomery Multiplications.
-Instructions that were overhead of our benchmarking code, or the operating system have been filtered out.
-
-+ [ ] **TODO**: Add a link to this large file (wonder where I should host it?)
-
-[Here]() is a dump of entire (3 million odd) set of x86 instruction that are executed, when we type ```cargo run``` into our terminal.
-We describe later how to extract the methods we care about from this giant mess of code.
-For now you can safely trust that they in the files described above.
+We do not bother with the SOS dump, as we are only interested in comparing the new algorithm with the fastest algorithm.
+More specifically, shown above are the assembly istructions that are executed from the time the `scalar_mul` function is invoked, to when it returns control to `main`.
+For reference, [here](/code/itrace.out.gz) is a compressed dump of entire (3 million odd) set of x86 instruction that are executed, when we type ```cargo run``` into our terminal (this includes all the linking and loading of libraries by the OS).
+We describe in a subsequent section how we were able to efficiently extract these instructions.
+For now you can safely trust that they are accurately represented in the files described above.
 The format in which the code is expressed is 
 
 ```
@@ -206,7 +203,10 @@ memory address, instruction
 ```
 
 Where memory address refers to the virutal memory address at which the instruction is stored for the process executing the program.
-Summarising our findings. The arkworks code base executes fewer x86 instructions; 280 vs 326 to specific.
+
+### Summary Of Findings
+
+The arkworks code base executes fewer x86 instructions; 280 vs 326 to specific.
 
 ```
 wc -l static/code/yuval                                                                     ─╯
@@ -217,7 +217,7 @@ wc -l static/code/opt                                                           
 
 ```
 
-
+Shown below is the op code distribution for the optimised CIOS algorithm.
 For `g-mult`, as expected we see $2n^2 + n = 36$ multiplication operations.
 
 ```
@@ -242,7 +242,7 @@ root@ubuntu-s-1vcpu-2gb-amd-nyc3-01:~/Montgomery-Benchmarks# cat opt|grep -o '[a
 ```
 
 For the new algorithm we expect to see fewer multiplications i.e $2n^2 + 1 = 33$ multiplication opearations, and that's exactly what we see.
-This is what we hoped would give us our speedup. 
+**This is what we hoped would give us our speedup.** 
 ```
 1 imul <---
 1 ret
@@ -290,24 +290,39 @@ We defer investigating whether this is possible to future work.
 
 ## How To Replicate The Process
 
-The remainder of the post is written as tutorial on how we were able to perform the above analysis.
+The remainder of the post is written as a tutorial on how we were able to perform the above analysis.
+To extract assembly we use techniques inspired by the field of [Dynamic Binary Instrumentation](https://www.cl.cam.ac.uk/techreports/UCAM-CL-TR-606.pdf).
+At a high level, when we run `cargo run`, just before an assembly instruction associated with are executable is physically executed on the CPU, the [pin tool](https://software.intel.com/sites/landingpage/pintool/downloads/pin-external-3.31-98869-gfa6f126a8-gcc-linux.tar.gz) provided by Intel interjects, and allows us to run pre and post instrumentation code.
+We wrote [this instrumentation](/code/itrace.cpp) code to simply log the assembly instructions to a file called `itrace.out` just before they are executed.
+Thus, the files above not only describe assembly instructions associated with each algorithm, but they are listed in time order of execution. 
 
-### Updating Cargo Configuration
+[^z4]: We are abstracting over some details here.
 
-This will make it so that the rustc linker includes all the symbols in the binary.
+{{< remark>}}
+Given that we use the above tool, our techniques only apply when executing programs on Intel CPUS.
+So this technique for extracting assembly instructions would not apply to a M series Mac on apple silicon.
+{{</ remark >}}
+
+Next, we describe how to download the pin tool and store it in a directory named `t`.
 
 ```
-$ cat ~/.cargo/config
+mkdir t && cd t
+wget https://software.intel.com/sites/landingpage/pintool/downloads/pin-external-3.31-98869-gfa6f126a8-gcc-linux.tar.gz
+ls -l 
+total 32232
+-rw-r--r-- 1 root  root  32994324 May  8 21:45 pin-external-3.31-98869-gfa6f126a8-gcc-linux.tar.gz
+```
+
+The next step is to make sure that the rustc linker includes all the symbols in the binary.
+This is achieved by updating the `.cargo/config.toml` file as described below.
+
+```
+$ cat ~/.cargo/config.toml
 [target.x86_64-unknown-linux-gnu]
 rustflags = [ "-C", "link-args=-Wl,-export-dynamic" ]
 ```
 
-{{< alert>}}
-What does including symbols in the binary mean?
-{{</ alert >}}
-
-### Updating the Cargo.toml
-
+This will allow us to later inspect the binary for the method headers we care about.
 The next step is to update are Cargo.toml file with the following lines.
 
 ```
@@ -317,34 +332,101 @@ debug = true
    
 ```
 
-This makes it so that we can build with debug information, but still in release-mode,
-when we run the code with the following parameters.
-```
-$ cargo build --release-with-debug
-```
-
-This is how the full Cargo.toml file looks like at this point
+This makes it so that we can build with debug information, but still in release-mode.
+So we still efficiency when running the code, and Rust does all its compiler optimisations.
+Then to builld the binary or executable, we run the code with the following parameters.
 
 ```
-───────┬─────────────────────────────────────────────────────────────────────────────────────────────────────
-       │ File: Cargo.toml
-───────┼─────────────────────────────────────────────────────────────────────────────────────────────────────
-   1   │ [package]
-   2   │ name = "minimal_mult"
-   3   │ version = "0.1.0"
-   4   │ edition = "2024"
-   5   │
-   6   │ [dependencies]
-   7   │ seq-macro = "0.3.5"
-   8   │ ark-std = { version = "0.5.0", default-features = false }
-   9   │ primitive-types = "0.13.1"
-  10   │ indicatif = "0.17"
-  11   │ ark-ff = { git = "https://github.com/abiswas3/arkworks-algebra.git", branch = "yuvals-mont-mult" }
-  12   │ ark-ff-macros = { git = "https://github.com/abiswas3/arkworks-algebra.git", branch = "yuvals-mont-mult" }
-  13   │
-  14   │ [profile.release-with-debug]
-  15   │ inherits = "release"
-  16   │ debug = true
-
+$ cargo build --profile release-with-debug
 ```
 
+This creates a binary file in `target/release-with-debug` directory called `minimal_mult`
+(`minimal_mult` is the name we use when defining the package in the `Cargo.toml` file).
+Then we wish to see where in memory the fucntions we care about are stored.
+The tool to do this is `nm`.
+From its [man pages](https://linux.die.net/man/1/nm): 
+
+{{< quote>}}
+GNU nm lists the symbols from object files objfile.... If no object files are listed as arguments, nm assumes the file a.out.
+{{</ quote>}}
+
+Remember we are interested in the following functions [yuvals multiplication](https://github.com/abiswas3/Montgomery-Benchmarks/blob/ffbc2d0731c5fd45ff9e6e560c18366fe94f9d7e/src/yuval_mult.rs#L90), 
+[cios multiplication with GNARK optimisations](https://github.com/abiswas3/Montgomery-Benchmarks/blob/ffbc2d0731c5fd45ff9e6e560c18366fe94f9d7e/src/optimised_cios.rs#L77) and [sos multiplication](https://github.com/abiswas3/Montgomery-Benchmarks/blob/ffbc2d0731c5fd45ff9e6e560c18366fe94f9d7e/src/vanilla_cios.rs#L5), and they all start with the prefix scalar_mul*
+
+Therefore, on filtering the output of `nm` by searching for the `scalar_mul`
+prefix, we get the memory address of the functions we care about.
+```
+$ nm --defined-only target/release-with-debug/minimal_mult|grep scalar
+
+000000000004b7d0 t _ZN12minimal_mult10yuval_mult10scalar_mul17ha435832ac9fe806eE
+000000000004a790 t _ZN12minimal_mult12vanilla_cios10scalar_mul17h8731c86ebf619ce7E
+000000000004b3a0 t _ZN12minimal_mult14optimised_cios20scalar_mul_unwrapped17h08a3ba9b5ffe6264E
+```
+
+It will soon be clear why we need this.
+Now let's run the binary, but get the pin tool to interject by dumping every x86 instruction to a file before it is executed (as described above).
+
+```
+$ ../t/pin-external-3.31-98869-gfa6f126a8-gcc-linux/pin -t ../t/pin-external-3.31-98869-gfa6f126a8-gcc-linux/source/tools/ManualExamples/obj-intel64/itrace.so -- ./target/release-with-debug/minimal_mult
+```
+
+This generates a file file called `itrace.out`, which looks like this. 
+
+```
+Loading /root/Montgomery-Benchmarks/target/release-with-debug/minimal_mult 5e4052170000v
+Loading /lib64/ld-linux-x86-64.so.2 793baee95000
+Loading [vdso] 793baee93000
+0x793baeeb5940 mov rdi, rsp
+0x793baeeb5943 call 0x793baeeb6620
+0x793baeeb6620 nop edx, edi
+0x793baeeb6624 push rbp
+0x793baeeb6625 lea rcx, ptr [rip-0x2162c]
+0x793baeeb662c lea rax, ptr [rip+0x19cad]
+0x793baeeb6633 movq xmm2, rcx
+0x793baeeb6638 movq xmm3, rax
+0x793baeeb663d punpcklqdq xmm2, xmm3
+0x793baeeb6641 mov rbp, rsp
+
+...
+
+
+```
+The key thing to note is that at virtual address `0x5e4052170000v`of the process executing our program, is where the code for our binary is loaded.
+Thus the yuval::scalar_mul routine is at `0x5e4052170000`+`0x4b7d0` (the address where minimal_mult was loaded, as per itrace.out, plus the offset where yuval_mult::scalar_mul is contained within minimal_mult, as per nm)
+Likewise, the opt::scalar_mul routine is contained at `0x5e4052170000`+`0x4b3a0`
+
+So if we want to dump a copy of a run of the yuval scalar_mul, we simply print from `0x5e4052170000`+`0x4b7d0`=`0x5e40521bb7d0` to the corresponding ret instruction:
+
+```
+cat itrace.out | sed -n '/^0x5e40521bb7d0/,/ret/{p;/ret/q}' > yuval.disas
+```
+
+and similarly 
+
+```
+cat itrace.out | sed -n '/^0x5e40521bb3a0/,/ret/{p;/ret/q}' > opt.disas
+```
+{{< remark>}}
+The above sed script is a little bit facile, and works here because the functions of interest do not call anything established, as we asked the Rust compiler to inline the helpers.
+A more robust way to extract the assembly is to do the following: 
+{{</ remark >}}
+
+```
+$ objdump -d -Mintel target/release-with-debug/minimal_mult|sed -n '/^0.*scalar_mul/,/ret/{/scalar_mul\|ret/p}'
+000000000004a790 <_ZN12minimal_mult12vanilla_cios10scalar_mul17h8731c86ebf619ce7E>:
+   4ac47:       c3                      ret
+000000000004b3a0 <_ZN12minimal_mult14optimised_cios20scalar_mul_unwrapped17h08a3ba9b5ffe6264E>:
+   4b7c6:       c3                      ret
+000000000004b7d0 <_ZN12minimal_mult10yuval_mult10scalar_mul17ha435832ac9fe806eE>:
+   4bce6:       c3                      ret
+```
+
+and then e.g. for yuval, 
+
+```
+cat itrace.out | sed -n '/^0x5e40521bb7d0/,/0x5e40521bbce6/{p;/0x5e40521bbce6/q}'
+```
+
+that is, using the address of the ret to figure out when to stop printing, and not just searching for the first ret, as this would be the return from the first callee of the function of interest and not from that functino itself.
+
+And that's how we were able to extract every line of assembly code that was executed when we call the different Montgomery multiplication algorithms.
