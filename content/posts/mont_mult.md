@@ -11,7 +11,7 @@ type= "posts"
 
 In a recent [blog post](https://hackmd.io/@Ingonyama/Barret-Montgomery), Yuval Domb describes a subtle, but remarkably clever optimisation that allows us to compute the Montgomery product of two integers modulo a $n$-limb[^z] integer $p$, using $2n^2 + 1$ multiplication operations.
 Previously, the best known algorithm[^z2] for Montgomery multiplication was known to use $2n^2 + n$ multiplication operations.
-Despite this theoretical promise of fewer multiplications, we did not see physical speedups in runtime when testing the new algorithm empirically against the old algorithms.
+Although the new algorithm theoretically requires fewer multiplications, empirical evaluations revealed no improvements in runtime. In fact, prior algorithms consistently outperformed the proposed method.
 This post is a deep dive into why this could be, and potentially what can be done about it.
 
 [^z]: The terms word, digit, limbs are all interchangeable. For everything we discuss here, the word size is 64-bits. So a 2-limb integer is just an integer that takes 2$\times$ 64 bits to describe.
@@ -29,11 +29,10 @@ Furthermore, modern cryptographic applications often require chaining many modul
 If we used long division for every individual multiplication, this would be prohibitively slow.
 Instead, we use [Montgomery multiplication](https://en.wikipedia.org/wiki/Montgomery_modular_multiplication).
 
-In Montgomery multiplication, instead of computing $ab \mod p$, we compute $$abR^{-1} \equiv (ab + mp)/R \mod p$$ where $R$ is set to the smallest power of two exceeding $p$ that falls on a computer word boundary and $m$ is some carefully chosen integer such that $ab + mp$ is divisible by $R$.
+In Montgomery multiplication, instead of computing $ab \mod p$, we compute $$abR^{-1} \equiv (ab + mp)/R \mod p$$ where $R$ is set to the smallest power of two exceeding $p$ that falls on a computer word boundary, and $m$ is some carefully chosen integer such that $ab + mp$ is divisible by $R$.
 For example, if $p$ is 381 bit integer, then $R= 2^{n \times w}=2^{6\times 64} = 2^{384}$ on a 64-bit architecture.
 Abstracting over some details, the reason for doing so is that the above computation does not use the expensive division algorithm.
-As $R$ is a power of two, we can divide by $R$ by using the bit shift operation which is native to most Instruction Set Architectures.
-This leads to more efficient code than implementing long division.
+As $R$ is a power of two, dividing by $R$ reduces to the bit shift operation which is native to most Instruction Set Architectures.
 For the interested reader, [Montgomery Arithmetic from a Software Perspective
 ](https://eprint.iacr.org/2017/1057) is a good resource for understanding the theory of Montgomery Multiplication.
 
@@ -66,11 +65,10 @@ For example, on Skylake (mid-level x86 processor)
 {{< /remark >}}
 
 
-Now given the above constraints, one would imagine that minimising the number of multiplication operations would the answer to faster algorithms.
-Previously, the best known algorithm for performing a single Montgomery multiplication operation required $2n^2 + n$ multiplication operations.
+Now given the above constraints, one would imagine that minimising the number of multiplication operations would be the answer to implementing faster algorithms.
 
 {{< remark >}}
-Surprisingly, this was not what we saw in actual experiments. 
+Surprisingly, this was not what we see in actual experiments. 
 The remainder of this document tries to understand why?
 {{</ remark>}}
 
@@ -83,8 +81,9 @@ We first describe our findings, and then describe how to recreate the analysis w
 
 We were provided with an [implementation](https://github.com/worldfnd/ProveKit/blob/dd8134ec3f2ad4991caa87653254ee64daf2d441/block-multiplier/src/lib.rs#L121) of the new multiplication algorithm[^y] by the folks at [Ingoyama](https://www.ingonyama.com/), specifically targeting the [BN-254](https://neuromancer.sk/std/bn/bn254) curve (i.e $n=4$), which we refer to as Y-mult in this post.
 
-The algorithms used for comparison are the SOS and optimised CIOS algorithms.
-We refer to the SOS algorithm described in [Acar's thesis](papers/Acar.pdf) as C-mult in this post.
+The algorithms used for comparison are the Separated Operand Scanning Algorithm (SOS) and the optimised Coarsely Integrated Operand Scanning Algorithm (CIOS).
+These were the state of the art Montgomery multiplication algorithms prior to Yuval's post.
+The SOS algorithm is described in [Acar's thesis](papers/Acar.pdf), and we refer to it as C-mult in this post.
 We denote as G-mult, the optimised version of the CIOS[^z3] algorithm by the [Gnark](https://hackmd.io/@gnark/modular_multiplication) team. 
 [Arkworks](https://github.com/a16z/arkworks-algebra) already had an implementations of the CIOS algorithm, and it can be found [here](htt:ps://github.com/a16z/arkworks-algebra/blob/7ad88c46e859a94ab8e0b19fd8a217c3dc472f1c/ff-macros/src/montgomery/mul.rs#L11).
 An implementation of the SOS[^g] algorithm can be found [here](https://github.com/a16z/arkworks-algebra/blob/7ad88c46e859a94ab8e0b19fd8a217c3dc472f1c/ff-macros/src/montgomery/mul.rs#L77).
@@ -284,7 +283,7 @@ It just means that the way the Rust compiler is building the current binary is n
 {{</ remark >}}
 
 At this point we have established why we think we do not see an improvement in runtime.
-One potential way to see the promised speedup is to right optimised assembly code directly.
+One potential way to see the promised speedup is to write optimised assembly code directly.
 We defer investigating whether this is possible to future work.
 
 
@@ -292,18 +291,20 @@ We defer investigating whether this is possible to future work.
 
 The remainder of the post is written as a tutorial on how we were able to perform the above analysis.
 To extract assembly we use techniques inspired by the field of [Dynamic Binary Instrumentation](https://www.cl.cam.ac.uk/techreports/UCAM-CL-TR-606.pdf).
-At a high level, when we run `cargo run`, just before an assembly instruction associated with are executable is physically executed on the CPU, the [pin tool](https://software.intel.com/sites/landingpage/pintool/downloads/pin-external-3.31-98869-gfa6f126a8-gcc-linux.tar.gz) provided by Intel interjects, and allows us to run pre and post instrumentation code.
-We wrote [this instrumentation](/code/itrace.cpp) code to simply log the assembly instructions to a file called `itrace.out` just before they are executed.
-Thus, the files above not only describe assembly instructions associated with each algorithm, but they are listed in time order of execution. 
+At a high level, when we run `cargo run`, just before an instruction in our code is physically executed on the CPU, the [pin tool](https://software.intel.com/sites/landingpage/pintool/downloads/pin-external-3.31-98869-gfa6f126a8-gcc-linux.tar.gz) provided by Intel interjects, and allows us to run pre and post instrumentation code.
+We modified [the instrumentation](/code/itrace.cpp) code to simply log the assembly instructions to a file called `itrace.out` just before they are executed.
+Thus, the files above not only describe assembly instructions associated with each algorithm, but they are are listed in time order of execution. 
 
 [^z4]: We are abstracting over some details here.
 
 {{< remark>}}
-Given that we use the above tool, our techniques only apply when executing programs on Intel CPUS.
-So this technique for extracting assembly instructions would not apply to a M series Mac on apple silicon.
+Given that we use the above tool, our techniques only apply when executing programs on Intel CPU's.
+This dynamic technique for extracting assembly instructions by running the binary would not apply to a M series Mac on apple silicon.
+There could be static instrumentation techniques that one could use instead.
 {{</ remark >}}
 
 Next, we describe how to download the pin tool and store it in a directory named `t`.
+(We assume that you are running Linux as the OS, though there are windows and Mac pin tools available on the website)
 
 ```
 mkdir t && cd t
@@ -313,7 +314,8 @@ total 32232
 -rw-r--r-- 1 root  root  32994324 May  8 21:45 pin-external-3.31-98869-gfa6f126a8-gcc-linux.tar.gz
 ```
 
-The next step is to make sure that the rustc linker includes all the symbols in the binary.
+After unzipping the contents, the next step is to make sure that the `rustc` linker includes all the symbols in the binary.
+If we do not do this, binary created by the rust compiler will have no human readable strings with debug information.
 This is achieved by updating the `.cargo/config.toml` file as described below.
 
 ```
@@ -344,17 +346,14 @@ This creates a binary file in `target/release-with-debug` directory called `mini
 (`minimal_mult` is the name we use when defining the package in the `Cargo.toml` file).
 Then we wish to see where in memory the fucntions we care about are stored.
 The tool to do this is `nm`.
-From its [man pages](https://linux.die.net/man/1/nm): 
-
-{{< quote>}}
-GNU nm lists the symbols from object files objfile.... If no object files are listed as arguments, nm assumes the file a.out.
-{{</ quote>}}
 
 Remember we are interested in the following functions [yuvals multiplication](https://github.com/abiswas3/Montgomery-Benchmarks/blob/ffbc2d0731c5fd45ff9e6e560c18366fe94f9d7e/src/yuval_mult.rs#L90), 
 [cios multiplication with GNARK optimisations](https://github.com/abiswas3/Montgomery-Benchmarks/blob/ffbc2d0731c5fd45ff9e6e560c18366fe94f9d7e/src/optimised_cios.rs#L77) and [sos multiplication](https://github.com/abiswas3/Montgomery-Benchmarks/blob/ffbc2d0731c5fd45ff9e6e560c18366fe94f9d7e/src/vanilla_cios.rs#L5), and they all start with the prefix scalar_mul*
 
 Therefore, on filtering the output of `nm` by searching for the `scalar_mul`
 prefix, we get the memory address of the functions we care about.
+These memory addresses represent the offset from the first line of the executable (not the actual virtual address).
+
 ```
 $ nm --defined-only target/release-with-debug/minimal_mult|grep scalar
 

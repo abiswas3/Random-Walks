@@ -1,3 +1,12 @@
 [submodule "themes/paper"]
 	path = themes/paper
 	url = https://github.com/abiswas3/hugo-paper.git
+[submodule "public"]
+	path = public
+	url = https://github.com/abiswas3/abiswas3.github.io.git
+[submodule "themes/terminal"]
+	path = themes/terminal
+	url = https://github.com/abiswas3/hugo-theme-terminal.git
+[submodule "themes/minimal"]
+	path = themes/minimal
+	url = https://github.com/nodejh/hugo-theme-mini.git

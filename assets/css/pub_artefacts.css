@@ -109,7 +109,7 @@
 }
 
 .note-toggle-label {
-  cursor: pointer;
+  cursor: not-allowed;
   font-size: 0.85rem;
   color: teal;
   user-select: none;

@@ -1,7 +1,9 @@
 {{ define "main" }}
 <section class="publications-list">
+  <ol>
   {{ range $index, $pub := (sort .Site.Data.publications "date" "desc") }}
     {{ if not $pub.hidden }}
+    <li>
       <article class="publication-item">
         <!-- Title and Venue -->
         <h3 class="pub-title">
@@ -52,15 +54,16 @@
 
         <!-- Note toggle -->
         {{ with $pub.note }}
-          <div class="note-section">
+          <div class="">
             <input type="checkbox" id="note-toggle-{{ $index }}" class="note-toggle-checkbox" />
             <label for="note-toggle-{{ $index }}" class="note-toggle-label"> Show note</label>
             <div class="note-content">{{ . | safeHTML }}</div>
           </div>
         {{ end }}
-
       </article>
+    </li>
     {{ end }}
   {{ end }}
+  </ol>
 </section>
 {{ end }}

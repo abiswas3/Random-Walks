@@ -1,11 +1,16 @@
 baseURL = '/'
-languageCode = 'en-us'
+languageCode = 'en-gb'
 title = 'Random Walks'
 theme = 'paper'
 
+
 [params]
 math = true
-customCSS = ["css/theorems.css", "css/footnotes.css", "css/tags.css", "css/home.css", "css/pub_artefacts.css"]
+customCSS = ["css/theorems.css", 
+              "css/footnotes.css", 
+              "css/tags.css", 
+              "css/home.css",
+              "css/pub_artefacts.css"]
 favicon = "favicon.ico"
 appleTouchIcon = "apple-touch-icon.png"
 
